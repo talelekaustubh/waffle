@@ -2,27 +2,21 @@ pipeline {
     agent any
 
     environment {
-        // Docker Hub credentials (stored in Jenkins credentials)
-        DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials')
-        
-        // Docker image details
-        IMAGE_NAME = 'sksupremeboss/popaye'
-        DOCKERFILE_DIR = '.'  // Directory where your Dockerfile is located (root of your repo)
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials') // Replace with your Jenkins Docker Hub credentials ID
+        DOCKER_IMAGE = 'sksupremeboss/popaye:latest' // Replace with your Docker Hub image name
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                // Pull the code from your GitHub repository
-                git url: 'https://github.com/talelekaustubh/waffle.git', branch: 'main'
+                git 'https://github.com/talelekaustubh/waffle.git' // Replace with your GitHub repository
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                // Build the Docker image using the Dockerfile
                 script {
-                    docker.build("${IMAGE_NAME}:latest", "${DOCKERFILE_DIR}")
+                    sh 'docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
@@ -30,10 +24,7 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    // Log in to Docker Hub using the credentials stored in Jenkins
-                    docker.withRegistry('https://index.docker.io/v1/', docker-hub-credentials) {
-                        echo 'Logged in to Docker Hub'
-                    }
+                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                 }
             }
         }
@@ -41,19 +32,9 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    // Push the built image to Docker Hub
-                    docker.withRegistry('https://index.docker.io/v1/', docker-hub-credentials) {
-                        docker.image("${IMAGE_NAME}:latest").push()
-                    }
+                    sh 'docker push $DOCKER_IMAGE'
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            // Clean up the workspace after the pipeline completes
-            cleanWs()
         }
     }
 }
