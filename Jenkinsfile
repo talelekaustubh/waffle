@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script {
                     // Log in to Docker Hub using the credentials stored in Jenkins
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
+                    docker.withRegistry('https://index.docker.io/v1/', docker-hub-credentials) {
                         echo 'Logged in to Docker Hub'
                     }
                 }
