@@ -14,7 +14,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Pull the code from your GitHub repository
-                git url: 'https://github.com/waffle.git', branch: 'main'
+                git url: 'https://github.com/talelekaustubh/waffle.git', branch: 'main'
             }
         }
 
