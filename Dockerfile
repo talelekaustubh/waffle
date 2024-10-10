@@ -1,20 +1,16 @@
-Use the official Node.js Alpine image as a parent image
-FROM node:14-alpine
+FROM python:3.8-alpine
 
-# Set the working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+COPY requirements.txt .
 
-# Install dependencies
-RUN npm install --production
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your application code
 COPY . .
 
-# Expose the port your app runs on
-EXPOSE 3000
+EXPOSE 80
 
-# Command to run your app
-CMD ["node", "app.js"]
+ENV NAME World
+
+# Run app.py when the container launches
+CMD ["python", "app.py"]
