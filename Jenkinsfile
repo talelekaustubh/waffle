@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/talelekaustubh/waffle.git' // Replace with your GitHub repository
+                git branch: 'main', url: 'https://github.com/talelekaustubh/waffle.git' // Use 'main' branch explicitly
             }
         }
 
